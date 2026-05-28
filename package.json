@@ -7,9 +7,20 @@
   "scripts": {
     "test": "node test/formatter.test.mjs",
     "typecheck": "tsc --noEmit",
-    "build": "node scripts/verify-extension.mjs"
+    "build": "vite build && node scripts/copy-extension-static.mjs && node scripts/verify-extension.mjs dist",
+    "verify:extension": "node scripts/verify-extension.mjs dist"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^5.1.1",
+    "vite": "^7.2.4",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1"
   },
   "devDependencies": {
+    "@types/chrome": "^0.1.34",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
     "typescript": "^5.8.0"
   }
 }

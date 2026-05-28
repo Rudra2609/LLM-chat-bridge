@@ -7,41 +7,7 @@
     <link rel="stylesheet" href="popup.css">
   </head>
   <body>
-    <main class="popup-shell">
-      <header class="topbar">
-        <img src="icons/icon.svg" alt="" class="logo">
-        <div>
-          <h1>LLM Chat Bridge</h1>
-          <p id="pageStatus">Checking current tab...</p>
-        </div>
-      </header>
-
-      <section class="panel">
-        <button id="captureButton" class="primary">Capture current chat</button>
-        <div id="captureSummary" class="summary" hidden></div>
-      </section>
-
-      <section class="panel">
-        <label for="destinationSelect">Destination</label>
-        <select id="destinationSelect"></select>
-        <div class="actions">
-          <button id="openFillButton" class="primary" disabled>Open and fill</button>
-          <button id="copyButton" disabled>Copy prompt</button>
-        </div>
-      </section>
-
-      <section class="preview" id="previewPanel" hidden>
-        <div class="preview-header">
-          <span>Prompt preview</span>
-          <span id="promptSize"></span>
-        </div>
-        <textarea id="promptPreview" spellcheck="false"></textarea>
-      </section>
-
-      <p id="toast" class="toast" role="status" aria-live="polite"></p>
-      <a class="options-link" href="options.html" target="_blank">Options and privacy</a>
-    </main>
-    <script src="shared/formatter.js"></script>
-    <script src="popup.js"></script>
+    <div id="root"></div>
+    <script type="module" src="/src/popup/main.tsx"></script>
   </body>
 </html>

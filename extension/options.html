@@ -7,33 +7,7 @@
     <link rel="stylesheet" href="options.css">
   </head>
   <body>
-    <main class="page">
-      <header>
-        <img src="icons/icon.svg" alt="" class="logo">
-        <div>
-          <h1>LLM Chat Bridge</h1>
-          <p>Provider settings and local privacy controls.</p>
-        </div>
-      </header>
-
-      <section>
-        <h2>Enabled providers</h2>
-        <div id="providerToggles" class="toggle-list"></div>
-      </section>
-
-      <section>
-        <h2>Privacy</h2>
-        <p>Chat content is read only after you click capture. It is processed locally, never sent to an extension backend, and only copied or filled into another LLM after your action.</p>
-        <button id="clearMetadataButton">Clear recent-transfer metadata</button>
-      </section>
-
-      <section>
-        <h2>Permission rationale</h2>
-        <p>The extension requests access only to supported LLM domains so content scripts can read the current chat and fill the destination composer. Clipboard permission is used for explicit copy and fallback flows.</p>
-      </section>
-
-      <p id="status" role="status" aria-live="polite"></p>
-    </main>
-    <script src="options.js"></script>
+    <div id="root"></div>
+    <script type="module" src="/src/options/main.tsx"></script>
   </body>
 </html>

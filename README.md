@@ -1,6 +1,6 @@
 # LLM Chat Bridge
 
-LLM Chat Bridge is a Manifest V3 Chrome extension that transfers the currently open chat from one supported LLM website to another. It is local-first: the extension does not use a backend, does not sync chat content, and never sends the destination prompt automatically.
+LLM Chat Bridge is a React + TypeScript Manifest V3 Chrome extension that transfers the currently open chat from one supported LLM website to another. It is local-first: the extension does not use a backend, does not sync chat content, and never sends the destination prompt automatically.
 
 ## V1 Providers
 
@@ -11,10 +11,17 @@ LLM Chat Bridge is a Manifest V3 Chrome extension that transfers the currently o
 
 ## Load Unpacked
 
+Build the extension first:
+
+```powershell
+npm install
+npm run build
+```
+
 1. Open Chrome and go to `chrome://extensions`.
 2. Enable Developer mode.
 3. Choose **Load unpacked**.
-4. Select the `extension` folder in this project.
+4. Select the `dist` folder in this project.
 
 ## Workflow
 
@@ -28,7 +35,7 @@ The extension opens the destination LLM and fills its composer. It never presses
 
 ## Development
 
-The runtime extension is self-contained in `extension/` so it can be loaded without a dependency install. TypeScript contracts live in `src/` for maintainability and future bundling.
+The Chrome runtime source files live in `extension/`, while React + TypeScript UI entrypoints live in `src/popup` and `src/options`. The production load-unpacked extension is generated into `dist/`.
 
 Available scripts:
 

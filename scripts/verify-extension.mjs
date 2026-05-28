@@ -3,27 +3,26 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
+const extensionRoot = process.argv[2] ? join(root, process.argv[2]) : join(root, "extension");
 const requiredFiles = [
-  "extension/manifest.json",
-  "extension/background.js",
-  "extension/contentScript.js",
-  "extension/popup.html",
-  "extension/popup.js",
-  "extension/options.html",
-  "extension/options.js",
-  "extension/shared/formatter.js",
-  "extension/icons/icon-16.png",
-  "extension/icons/icon-32.png",
-  "extension/icons/icon-48.png",
-  "extension/icons/icon-128.png"
+  "manifest.json",
+  "background.js",
+  "contentScript.js",
+  "popup.html",
+  "options.html",
+  "shared/formatter.js",
+  "icons/icon-16.png",
+  "icons/icon-32.png",
+  "icons/icon-48.png",
+  "icons/icon-128.png"
 ];
 
 for (const file of requiredFiles) {
-  const fullPath = join(root, file);
+  const fullPath = join(extensionRoot, file);
   statSync(fullPath);
 }
 
-const manifest = JSON.parse(readFileSync(join(root, "extension/manifest.json"), "utf8"));
+const manifest = JSON.parse(readFileSync(join(extensionRoot, "manifest.json"), "utf8"));
 if (manifest.manifest_version !== 3) {
   throw new Error("manifest.json must use Manifest V3.");
 }

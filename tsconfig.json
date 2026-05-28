@@ -3,10 +3,11 @@
     "target": "ES2022",
     "module": "ES2022",
     "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
     "strict": true,
     "noEmit": true,
-    "lib": ["ES2022", "DOM"],
-    "types": []
+    "lib": ["ESNext", "DOM"],
+    "types": ["chrome", "node", "react", "react-dom"]
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts"]
 }
