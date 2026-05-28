@@ -1,0 +1,15 @@
+{
+  "name": "llm-chat-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A local-first Chrome extension for transferring the current chat between supported LLM websites.",
+  "type": "module",
+  "scripts": {
+    "test": "node test/formatter.test.mjs",
+    "typecheck": "tsc --noEmit",
+    "build": "node scripts/verify-extension.mjs"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.0"
+  }
+}

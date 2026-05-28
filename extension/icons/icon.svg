@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="LLM Chat Bridge">
+  <rect width="128" height="128" rx="24" fill="#15191f"/>
+  <path d="M31 38h40c12 0 21 9 21 21s-9 21-21 21H58l-18 15v-15h-9c-12 0-21-9-21-21s9-21 21-21z" fill="#4fd1c5"/>
+  <path d="M57 48h40c12 0 21 9 21 21s-9 21-21 21h-9v15L70 90H57c-12 0-21-9-21-21s9-21 21-21z" fill="#f6c85f"/>
+  <path d="M49 63h35m-10-10 10 10-10 10" fill="none" stroke="#15191f" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
