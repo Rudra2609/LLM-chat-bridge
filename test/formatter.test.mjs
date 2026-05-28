@@ -1,13 +1,16 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import vm from "node:vm";
+import ts from "typescript";
 
-const source = readFileSync(new URL("../extension/shared/formatter.js", import.meta.url), "utf8");
-const context = { globalThis: {} };
-vm.createContext(context);
-vm.runInContext(source, context);
-
-const { formatTransferPrompt, summarizeConversation } = context.globalThis.LLMBridgeFormatter;
+const source = readFileSync(new URL("../src/formatter.ts", import.meta.url), "utf8");
+const { outputText: code } = ts.transpileModule(source, {
+  compilerOptions: {
+    module: ts.ModuleKind.ES2022,
+    target: ts.ScriptTarget.ES2022
+  }
+});
+const moduleUrl = `data:text/javascript;base64,${Buffer.from(code).toString("base64")}`;
+const { formatTransferPrompt, summarizeConversation } = await import(moduleUrl);
 
 const conversation = {
   provider: "chatgpt",

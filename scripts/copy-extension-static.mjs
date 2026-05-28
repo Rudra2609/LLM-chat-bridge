@@ -1,4 +1,4 @@
-import { copyFileSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -17,6 +17,8 @@ const excluded = new Set([
 copyDirectory(sourceRoot);
 promoteBuiltHtml("popup.html");
 promoteBuiltHtml("options.html");
+rmSync(join(outRoot, "extension"), { recursive: true, force: true });
+rmSync(join(outRoot, "shared"), { recursive: true, force: true });
 console.log("Copied static extension runtime files.");
 
 function copyDirectory(directory) {

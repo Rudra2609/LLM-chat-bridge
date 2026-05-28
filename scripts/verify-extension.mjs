@@ -10,7 +10,6 @@ const requiredFiles = [
   "contentScript.js",
   "popup.html",
   "options.html",
-  "shared/formatter.js",
   "icons/icon-16.png",
   "icons/icon-32.png",
   "icons/icon-48.png",
