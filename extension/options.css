@@ -1,11 +1,15 @@
 :root {
   color-scheme: light dark;
-  --bg: #f7f8fa;
-  --panel: #ffffff;
-  --text: #17202a;
-  --muted: #667085;
-  --border: #d9dee7;
-  --primary: #127c72;
+  --bg: #eef3f7;
+  --surface: #ffffff;
+  --surface-soft: #f8fbfd;
+  --text: #111827;
+  --muted: #607086;
+  --border: #d7e0e8;
+  --primary: #087f8c;
+  --primary-strong: #056876;
+  --gold: #d99f24;
+  --shadow: 0 18px 42px rgba(27, 45, 64, 0.14);
 }
 
 * {
@@ -20,21 +24,33 @@ body {
 }
 
 .page {
-  max-width: 760px;
+  max-width: 860px;
   margin: 0 auto;
-  padding: 32px 20px;
+  padding: 34px 20px;
 }
 
-header {
+.settings-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+  padding: 20px;
+  border-radius: 8px;
+  background: #18212b;
+  color: white;
+  box-shadow: var(--shadow);
+}
+
+.hero-left {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 22px;
 }
 
 .logo {
-  width: 52px;
-  height: 52px;
+  width: 56px;
+  height: 56px;
 }
 
 h1,
@@ -44,61 +60,127 @@ p {
 }
 
 h1 {
-  font-size: 25px;
+  font-size: 28px;
+  line-height: 1.15;
 }
 
 h2 {
-  margin-bottom: 10px;
-  font-size: 17px;
+  font-size: 18px;
 }
 
-header p,
-section p,
-#status {
-  color: var(--muted);
+.settings-hero p {
+  color: #b8c5d4;
 }
 
-section {
+.eyebrow {
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.ghost-link {
+  flex: 0 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 7px;
+  padding: 9px 12px;
+  color: white;
+  font-weight: 760;
+  text-decoration: none;
+}
+
+.settings-panel {
   margin-top: 14px;
   padding: 18px;
   border: 1px solid var(--border);
   border-radius: 8px;
-  background: var(--panel);
+  background: var(--surface);
+}
+
+.section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.section-heading p,
+.settings-panel > p,
+#status {
+  color: var(--muted);
+}
+
+.status-pill {
+  flex: 0 0 auto;
+  border-radius: 7px;
+  padding: 5px 8px;
+  background: #e7f6f6;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.status-pill.muted {
+  background: var(--surface-soft);
+  color: var(--muted);
 }
 
 .toggle-list {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
 .toggle-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  gap: 10px;
+  min-height: 56px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-soft);
 }
 
-.toggle-row span {
-  font-weight: 650;
+.provider-badge {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 7px;
+  background: var(--primary);
+  color: white;
+  font-weight: 800;
+}
+
+.provider-name {
+  font-weight: 760;
 }
 
 input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   accent-color: var(--primary);
 }
 
 button {
   margin-top: 14px;
-  min-height: 38px;
+  min-height: 40px;
   border: 1px solid var(--primary);
   border-radius: 7px;
   padding: 8px 12px;
   background: var(--primary);
   color: #fff;
   font: inherit;
-  font-weight: 700;
+  font-weight: 760;
   cursor: pointer;
+}
+
+button:hover {
+  background: var(--primary-strong);
 }
 
 #status {
@@ -106,13 +188,32 @@ button {
   margin-top: 14px;
 }
 
+@media (max-width: 640px) {
+  .settings-hero {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .toggle-list {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #101418;
-    --panel: #171c22;
-    --text: #f0f4f8;
-    --muted: #a9b4c0;
-    --border: #303946;
-    --primary: #32b3a8;
+    --bg: #0f141a;
+    --surface: #171e26;
+    --surface-soft: #202934;
+    --text: #f3f6f9;
+    --muted: #a7b4c2;
+    --border: #2d3a47;
+    --primary: #2bb3bd;
+    --primary-strong: #2198a1;
+    --gold: #f0c15e;
+    --shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+  }
+
+  .status-pill {
+    background: #12363b;
   }
 }

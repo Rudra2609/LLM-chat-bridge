@@ -11,6 +11,7 @@ function PopupApp() {
   const [settings, setSettings] = useState<BridgeSettings | null>(null);
   const [conversation, setConversation] = useState<NormalizedConversation | null>(null);
   const [destination, setDestination] = useState<ProviderId>("chatgpt");
+  const [promptDraft, setPromptDraft] = useState("");
   const [toast, setToast] = useState("Checking current tab...");
   const [busy, setBusy] = useState(false);
 
@@ -33,6 +34,10 @@ function PopupApp() {
     if (!conversation) return "";
     return formatTransferPrompt(conversation, providerName(destination));
   }, [conversation, destination]);
+
+  useEffect(() => {
+    setPromptDraft(prompt);
+  }, [prompt]);
 
   async function captureConversation() {
     setBusy(true);
@@ -61,14 +66,14 @@ function PopupApp() {
   }
 
   async function openAndFill() {
-    if (!conversation || !prompt.trim()) return;
+    if (!conversation || !promptDraft.trim()) return;
     setBusy(true);
     setToast("Opening destination...");
 
     const payload: TransferPayload = {
       source: conversation,
       destination,
-      prompt
+      prompt: promptDraft
     };
 
     try {
@@ -78,10 +83,10 @@ function PopupApp() {
         return;
       }
 
-      await navigator.clipboard.writeText(prompt);
+      await navigator.clipboard.writeText(promptDraft);
       setToast(`${response?.reason || "Auto-fill failed"} Copied prompt to clipboard instead.`);
     } catch {
-      await navigator.clipboard.writeText(prompt);
+      await navigator.clipboard.writeText(promptDraft);
       setToast("Auto-fill failed. Copied prompt to clipboard instead.");
     } finally {
       setBusy(false);
@@ -89,9 +94,9 @@ function PopupApp() {
   }
 
   async function copyPrompt() {
-    if (!prompt.trim()) return;
+    if (!promptDraft.trim()) return;
     try {
-      await navigator.clipboard.writeText(prompt);
+      await navigator.clipboard.writeText(promptDraft);
       setToast("Prompt copied to clipboard.");
     } catch {
       setToast("Clipboard write failed. Select the preview text and copy manually.");
@@ -99,43 +104,80 @@ function PopupApp() {
   }
 
   const hasEnabledProvider = enabledProviders.length > 0;
-  const canTransfer = Boolean(conversation && prompt.trim() && hasEnabledProvider && !busy);
+  const canTransfer = Boolean(conversation && promptDraft.trim() && hasEnabledProvider && !busy);
 
   return (
-    <main className="popup-shell">
-      <header className="topbar">
-        <img src="icons/icon.svg" alt="" className="logo" />
-        <div>
-          <h1>LLM Chat Bridge</h1>
-          <p id="pageStatus">{activeTab?.url ? `Current tab: ${summarizeTab(activeTab.url)}` : toast}</p>
+    <main className="popup-shell bridge-app">
+      <header className="hero">
+        <div className="hero-mark">
+          <img src="icons/icon.svg" alt="" className="logo" />
         </div>
+        <div className="hero-copy">
+          <h1>LLM Chat Bridge</h1>
+          <p id="pageStatus">{activeTab?.url ? summarizeTab(activeTab.url) : "No supported tab detected yet"}</p>
+        </div>
+        <a className="settings-button" href="options.html" target="_blank" rel="noreferrer" aria-label="Open settings">
+          Settings
+        </a>
       </header>
 
-      <section className="panel">
-        <button id="captureButton" className="primary" disabled={busy} onClick={captureConversation}>
-          Capture current chat
-        </button>
+      <section className="transfer-board">
+        <div className="endpoint">
+          <span className="endpoint-label">Source</span>
+          <strong>{conversation?.providerName || "Current tab"}</strong>
+          <small>{conversation ? `${conversation.messages.length} messages captured` : "Ready to scan visible chat"}</small>
+        </div>
+        <div className="bridge-line" aria-hidden="true">
+          <span />
+        </div>
+        <div className="endpoint">
+          <span className="endpoint-label">Destination</span>
+          <strong>{providerName(destination)}</strong>
+          <small>Fill only, never auto-send</small>
+        </div>
+      </section>
+
+      <section className="action-panel">
+        <div className="action-header">
+          <div>
+            <span className="eyebrow">Step 1</span>
+            <h2>Capture this chat</h2>
+          </div>
+          <button id="captureButton" className="primary" disabled={busy} onClick={captureConversation}>
+            {busy ? "Working..." : "Capture"}
+          </button>
+        </div>
         {conversation ? <div id="captureSummary" className="summary">{summarizeConversation(conversation)}</div> : null}
       </section>
 
-      <section className="panel">
-        <label htmlFor="destinationSelect">Destination</label>
-        <select
-          id="destinationSelect"
-          value={destination}
-          disabled={!hasEnabledProvider}
-          onChange={(event) => setDestination(event.target.value as ProviderId)}
-        >
+      <section className="action-panel">
+        <div className="action-header compact">
+          <div>
+            <span className="eyebrow">Step 2</span>
+            <h2>Choose destination</h2>
+          </div>
+        </div>
+        <div className="provider-grid" role="radiogroup" aria-label="Destination provider">
           {enabledProviders.map((provider) => (
-            <option key={provider.id} value={provider.id}>{provider.name}</option>
+            <button
+              key={provider.id}
+              type="button"
+              className={provider.id === destination ? "provider-chip active" : "provider-chip"}
+              onClick={() => setDestination(provider.id)}
+              disabled={!hasEnabledProvider}
+              aria-pressed={provider.id === destination}
+            >
+              <span>{provider.name.slice(0, 1)}</span>
+              {provider.name}
+            </button>
           ))}
-        </select>
+        </div>
         <div className="actions">
-          <button id="openFillButton" className="primary" disabled={!canTransfer} onClick={openAndFill}>
-            Open and fill
+          <button id="openFillButton" className="primary wide" disabled={!canTransfer} onClick={openAndFill}>
+            Open and fill composer
           </button>
-          <button id="copyButton" disabled={!prompt.trim() || busy} onClick={copyPrompt}>
-            Copy prompt
+          <button id="copyButton" className="secondary" disabled={!promptDraft.trim() || busy} onClick={copyPrompt}>
+            Copy
           </button>
         </div>
       </section>
@@ -144,16 +186,22 @@ function PopupApp() {
         <section className="preview" id="previewPanel">
           <div className="preview-header">
             <span>Prompt preview</span>
-            <span id="promptSize">{prompt.length.toLocaleString()} chars</span>
+            <span id="promptSize">{promptDraft.length.toLocaleString()} chars</span>
           </div>
-          <textarea id="promptPreview" spellCheck={false} value={prompt} onChange={() => undefined} readOnly />
+          <textarea
+            id="promptPreview"
+            spellCheck={false}
+            value={promptDraft}
+            onChange={(event) => setPromptDraft(event.target.value)}
+          />
         </section>
       ) : null}
 
-      <p id="toast" className="toast" role="status" aria-live="polite">
-        {hasEnabledProvider ? toast : "Enable at least one provider in Options."}
-      </p>
-      <a className="options-link" href="options.html" target="_blank" rel="noreferrer">Options and privacy</a>
+      <footer className="status-bar">
+        <p id="toast" className="toast" role="status" aria-live="polite">
+          {hasEnabledProvider ? toast : "Enable at least one provider in Options."}
+        </p>
+      </footer>
     </main>
   );
 }
