@@ -1,6 +1,17 @@
 # LLM Chat Bridge
 
+[![React](https://img.shields.io/badge/React-19-087f8c?logo=react&logoColor=white)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Chrome Extension](https://img.shields.io/badge/Chrome%20Extension-MV3-d99f24?logo=googlechrome&logoColor=white)](https://developer.chrome.com/docs/extensions/)
+
 LLM Chat Bridge is a React + TypeScript Manifest V3 Chrome extension that transfers the currently open chat from one supported LLM website to another. It is local-first: the extension does not use a backend, does not sync chat content, and never sends the destination prompt automatically.
+
+## Tech Stack
+
+- React 19 for the popup and options UI.
+- TypeScript for UI state, shared provider types, and formatter contracts.
+- Vite for building the production load-unpacked extension into `dist/`.
+- Manifest V3 content scripts and service worker for Chrome extension behavior.
 
 ## V1 Providers
 
