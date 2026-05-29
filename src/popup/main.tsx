@@ -48,7 +48,7 @@ function PopupApp() {
       setActiveTab(tab);
       if (!tab?.id) throw new Error("No active tab found.");
 
-      const response = await chrome.tabs.sendMessage(tab.id, { type: "CAPTURE_CONVERSATION" });
+      const response = await sendTabMessage(tab.id, { type: "CAPTURE_CONVERSATION" });
       if (!response?.ok) throw new Error(response?.reason || "Could not capture this page.");
 
       const captured = response.conversation as NormalizedConversation;
@@ -211,6 +211,23 @@ function summarizeTab(url: string): string {
     return new URL(url).hostname.replace(/^www\./, "");
   } catch {
     return "Current tab ready.";
+  }
+}
+
+async function sendTabMessage(tabId: number, message: unknown) {
+  await ensureContentScript(tabId);
+  return chrome.tabs.sendMessage(tabId, message);
+}
+
+async function ensureContentScript(tabId: number): Promise<void> {
+  try {
+    await chrome.tabs.sendMessage(tabId, { type: "PING_CONTENT_SCRIPT" });
+    return;
+  } catch {
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      files: ["contentScript.js"]
+    });
   }
 }
 

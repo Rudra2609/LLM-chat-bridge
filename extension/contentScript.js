@@ -1,4 +1,7 @@
 (function bootContentScript() {
+  if (globalThis.__LLM_CHAT_BRIDGE_CONTENT_READY__) return;
+  globalThis.__LLM_CHAT_BRIDGE_CONTENT_READY__ = true;
+
   const PROVIDERS = {
     chatgpt: {
       id: "chatgpt",
@@ -52,6 +55,11 @@
   };
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message?.type === "PING_CONTENT_SCRIPT") {
+      sendResponse({ ok: true });
+      return false;
+    }
+
     if (message?.type === "CAPTURE_CONVERSATION") {
       try {
         const adapter = getCurrentAdapter();

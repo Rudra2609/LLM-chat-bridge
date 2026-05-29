@@ -60,6 +60,7 @@ async function openAndFill(payload) {
   await delay(900);
 
   try {
+    await ensureContentScript(readyTab.id);
     const response = await chrome.tabs.sendMessage(readyTab.id, {
       type: "FILL_CONVERSATION",
       payload
@@ -101,4 +102,15 @@ function waitForTabComplete(tabId) {
 
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function ensureContentScript(tabId) {
+  try {
+    await chrome.tabs.sendMessage(tabId, { type: "PING_CONTENT_SCRIPT" });
+  } catch {
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      files: ["contentScript.js"]
+    });
+  }
 }
