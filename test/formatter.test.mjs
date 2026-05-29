@@ -32,7 +32,8 @@ const conversation = {
         { type: "link", text: "Docs", href: "https://example.com/docs" },
         { type: "table", markdown: "| A | B |\n| --- | --- |\n| 1 | 2 |" },
         { type: "image", alt: "diagram" },
-        { type: "file", name: "brief.pdf" }
+        { type: "file", name: "brief.pdf", href: "https://example.com/brief.pdf", mimeType: "application/pdf", size: "42 KB" },
+        { type: "file", name: "private-notes.txt" }
       ]
     }
   ]
@@ -47,7 +48,8 @@ assert.match(prompt, /```js\nconsole\.log\('yes'\);\n```/);
 assert.match(prompt, /\[Docs\]\(https:\/\/example\.com\/docs\)/);
 assert.match(prompt, /\| A \| B \|/);
 assert.match(prompt, /\[Image: diagram\]/);
-assert.match(prompt, /\[File: brief\.pdf\]/);
+assert.match(prompt, /Attached files detected:\n1\. \[File: brief\.pdf \(application\/pdf, 42 KB\)\]\(https:\/\/example\.com\/brief\.pdf\)/);
+assert.match(prompt, /\[File: private-notes\.txt - upload manually if needed\]/);
 assert.match(prompt, /Please continue from here\./);
 
 const emptyPrompt = formatTransferPrompt({ ...conversation, messages: [] }, "Gemini");

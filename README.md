@@ -44,6 +44,12 @@ npm run build
 
 The extension opens the destination LLM and fills its composer. It never presses Send. If the destination composer cannot be found, it copies the formatted prompt to the clipboard as a fallback.
 
+## File Attachments
+
+The extension captures file attachments as part of the transfer when the source chat exposes a visible file name, attachment card, download link, or file-looking URL. Linked files are included in the destination prompt with their name, type/size when visible, and source link.
+
+Chrome extensions cannot reliably extract and re-upload hidden/private file bytes from another LLM provider's chat history. If a provider does not expose a usable file link, the transfer includes a clear file placeholder so the destination LLM can ask you to upload that file manually.
+
 ## Development
 
 The Chrome runtime source files live in `extension/`, while React + TypeScript UI entrypoints live in `src/popup` and `src/options`. The production load-unpacked extension is generated into `dist/`.

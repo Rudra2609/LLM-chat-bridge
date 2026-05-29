@@ -145,7 +145,6 @@
 
   function extractBlocks(root) {
     const blocks = [];
-    const codeElements = new Set(Array.from(root.querySelectorAll("pre, pre code, code")));
     const tableElements = Array.from(root.querySelectorAll("table"));
 
     tableElements.forEach((table) => {
@@ -170,18 +169,20 @@
       const href = anchor.href;
       if (!href || href.startsWith("javascript:")) return;
       const label = normalizedInnerText(anchor) || href;
-      blocks.push({ type: "link", text: label, href });
+      if (isFileLikeAnchor(anchor)) {
+        blocks.push(extractFileBlock(anchor));
+      } else {
+        blocks.push({ type: "link", text: label, href });
+      }
     });
 
     root.querySelectorAll("img").forEach((img) => {
       blocks.push({ type: "image", alt: img.alt || img.getAttribute("aria-label") || "", src: img.currentSrc || img.src || "" });
     });
 
-    root.querySelectorAll("[data-testid*='file'], [class*='file'], [aria-label*='file' i]").forEach((fileElement) => {
-      const name = normalizedInnerText(fileElement);
-      if (name && name.length < 160) {
-        blocks.push({ type: "file", name });
-      }
+    findFileElements(root).forEach((fileElement) => {
+      const fileBlock = extractFileBlock(fileElement);
+      if (fileBlock.name) blocks.push(fileBlock);
     });
 
     root.querySelectorAll(".katex, .math, [class*='math']").forEach((mathElement) => {
@@ -195,6 +196,111 @@
     }
 
     return dedupeBlocks(blocks);
+  }
+
+  function findFileElements(root) {
+    const selector = [
+      "[data-testid*='file' i]",
+      "[data-testid*='attachment' i]",
+      "[class*='file' i]",
+      "[class*='attachment' i]",
+      "[aria-label*='file' i]",
+      "[aria-label*='attachment' i]",
+      "[title*='file' i]",
+      "[title*='attachment' i]",
+      "a[download]",
+      "a[href*='download' i]",
+      "a[href*='attachment' i]",
+      "a[href*='file' i]"
+    ].join(",");
+
+    return Array.from(root.querySelectorAll(selector))
+      .filter((element) => element instanceof HTMLElement && isVisible(element));
+  }
+
+  function extractFileBlock(element) {
+    const anchor = element.matches?.("a[href]") ? element : element.querySelector?.("a[href]");
+    const href = anchor?.href || "";
+    const downloadName = anchor?.getAttribute?.("download") || "";
+    const aria = element.getAttribute?.("aria-label") || anchor?.getAttribute?.("aria-label") || "";
+    const title = element.getAttribute?.("title") || anchor?.getAttribute?.("title") || "";
+    const text = normalizedInnerText(element);
+    const name = cleanFileName(downloadName || findFileName(text) || findFileName(aria) || findFileName(title) || fileNameFromUrl(href) || text || "Attached file");
+    const size = findFileSize(`${text} ${aria} ${title}`);
+    const mimeType = inferMimeType(name);
+    const description = href ? "source link may require the original account session" : "source did not expose a downloadable link";
+
+    return {
+      type: "file",
+      name,
+      href: href || undefined,
+      mimeType: mimeType || undefined,
+      size: size || undefined,
+      description
+    };
+  }
+
+  function isFileLikeAnchor(anchor) {
+    const href = anchor.href || "";
+    const combined = `${href} ${anchor.getAttribute("download") || ""} ${normalizedInnerText(anchor)} ${anchor.getAttribute("aria-label") || ""} ${anchor.getAttribute("title") || ""}`;
+    return Boolean(anchor.hasAttribute("download") || findFileName(combined) || /\/(download|attachment|file)s?\b/i.test(href));
+  }
+
+  function findFileName(text) {
+    const match = String(text || "").match(/[\w .()[\]-]+\.(pdf|docx?|xlsx?|pptx?|csv|txt|md|json|zip|rar|7z|png|jpe?g|webp|gif|svg|mp3|mp4|mov|wav|py|js|ts|tsx|jsx|html|css)\b/i);
+    return match?.[0]?.trim() || "";
+  }
+
+  function cleanFileName(name) {
+    return String(name || "")
+      .replace(/\s+/g, " ")
+      .replace(/^(file|attachment)\s*:\s*/i, "")
+      .trim()
+      .slice(0, 180);
+  }
+
+  function fileNameFromUrl(url) {
+    try {
+      const parsed = new URL(url);
+      const lastSegment = decodeURIComponent(parsed.pathname.split("/").filter(Boolean).at(-1) || "");
+      return findFileName(lastSegment) || "";
+    } catch {
+      return "";
+    }
+  }
+
+  function findFileSize(text) {
+    const match = String(text || "").match(/\b\d+(?:\.\d+)?\s?(?:B|KB|MB|GB|TB)\b/i);
+    return match?.[0] || "";
+  }
+
+  function inferMimeType(name) {
+    const extension = String(name || "").split(".").pop()?.toLowerCase();
+    const mimeTypes = {
+      pdf: "application/pdf",
+      doc: "application/msword",
+      docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      xls: "application/vnd.ms-excel",
+      xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      ppt: "application/vnd.ms-powerpoint",
+      pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      csv: "text/csv",
+      txt: "text/plain",
+      md: "text/markdown",
+      json: "application/json",
+      zip: "application/zip",
+      png: "image/png",
+      jpg: "image/jpeg",
+      jpeg: "image/jpeg",
+      webp: "image/webp",
+      gif: "image/gif",
+      svg: "image/svg+xml",
+      mp3: "audio/mpeg",
+      wav: "audio/wav",
+      mp4: "video/mp4",
+      mov: "video/quicktime"
+    };
+    return extension ? mimeTypes[extension] || "" : "";
   }
 
   function fillComposer(adapter, payload) {

@@ -8,7 +8,7 @@ export type RichBlock =
   | { type: "link"; text: string; href: string }
   | { type: "table"; markdown: string }
   | { type: "image"; alt?: string; src?: string }
-  | { type: "file"; name: string }
+  | { type: "file"; name: string; href?: string; mimeType?: string; size?: string; description?: string }
   | { type: "math"; text: string };
 
 export interface NormalizedMessage {
