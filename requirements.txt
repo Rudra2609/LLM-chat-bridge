@@ -1,0 +1,2 @@
+# This project is a React + TypeScript Chrome extension.
+# It has no Python runtime dependencies.
