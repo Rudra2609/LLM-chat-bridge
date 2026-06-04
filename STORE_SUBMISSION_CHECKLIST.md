@@ -5,6 +5,6 @@
 - [ ] Add screenshots showing capture, destination selection, and filled destination composer before sending.
 - [ ] Add a public privacy policy URL that matches `PRIVACY.md`.
 - [ ] In the developer dashboard, disclose that user chat content is handled locally for the transfer feature.
-- [ ] Confirm host permissions are limited to ChatGPT, Gemini, Claude, and DeepSeek domains.
+- [ ] Confirm host permissions are limited to ChatGPT, Gemini, Claude, DeepSeek, and Grok domains.
 - [ ] Verify no remote code, analytics, ads, or backend requests are present.
 - [ ] Manually test load-unpacked install in a fresh Chrome profile.

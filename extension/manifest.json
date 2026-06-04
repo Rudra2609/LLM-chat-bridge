@@ -24,7 +24,9 @@
     "https://chat.openai.com/*",
     "https://gemini.google.com/*",
     "https://claude.ai/*",
-    "https://chat.deepseek.com/*"
+    "https://chat.deepseek.com/*",
+    "https://grok.com/*",
+    "https://x.com/*"
   ],
   "content_scripts": [
     {
@@ -33,7 +35,9 @@
         "https://chat.openai.com/*",
         "https://gemini.google.com/*",
         "https://claude.ai/*",
-        "https://chat.deepseek.com/*"
+        "https://chat.deepseek.com/*",
+        "https://grok.com/*",
+        "https://x.com/i/grok*"
       ],
       "js": ["contentScript.js"],
       "run_at": "document_idle"

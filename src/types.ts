@@ -1,4 +1,4 @@
-export type ProviderId = "chatgpt" | "gemini" | "claude" | "deepseek";
+export type ProviderId = "chatgpt" | "gemini" | "claude" | "deepseek" | "grok";
 
 export type MessageRole = "user" | "assistant" | "system" | "unknown";
 

@@ -51,6 +51,30 @@
         { selector: "[class*='ds-markdown']", role: () => "assistant" }
       ],
       composerSelectors: ["textarea", "[contenteditable='true']"]
+    },
+    grok: {
+      id: "grok",
+      name: "Grok",
+      hosts: ["grok.com", "x.com"],
+      messageSelectors: [
+        { selector: "[data-message-author-role]", role: (el) => normalizeRole(el.getAttribute("data-message-author-role")) },
+        { selector: "[data-testid*='user' i]", role: inferRoleFromText },
+        { selector: "[data-testid*='assistant' i]", role: inferRoleFromText },
+        { selector: "[data-testid*='message' i]", role: inferRoleFromText },
+        { selector: "[class*='user' i][class*='message' i]", role: () => "user" },
+        { selector: "[class*='assistant' i][class*='message' i]", role: () => "assistant" },
+        { selector: "[class*='message' i]", role: inferRoleFromText },
+        { selector: "article", role: inferRoleFromText },
+        { selector: "[role='article']", role: inferRoleFromText }
+      ],
+      composerSelectors: [
+        "textarea",
+        "[contenteditable='true']",
+        "[role='textbox']",
+        "[data-testid*='composer' i]",
+        "[aria-label*='ask' i]",
+        "[aria-label*='message' i]"
+      ]
     }
   };
 
@@ -97,6 +121,7 @@
 
   function getCurrentAdapter() {
     const host = location.hostname.replace(/^www\./, "");
+    if (host === "x.com" && !location.pathname.startsWith("/i/grok")) return null;
     return Object.values(PROVIDERS).find((provider) => provider.hosts.some((candidate) => host === candidate || host.endsWith(`.${candidate}`))) || null;
   }
 
@@ -387,14 +412,14 @@
 
     const label = `${element.getAttribute("aria-label") || ""} ${element.className || ""}`.toLowerCase();
     if (label.includes("user") || label.includes("human")) return "user";
-    if (label.includes("assistant") || label.includes("model") || label.includes("claude")) return "assistant";
+    if (label.includes("assistant") || label.includes("model") || label.includes("claude") || label.includes("grok")) return "assistant";
     return "unknown";
   }
 
   function normalizeRole(role) {
     const value = String(role || "").toLowerCase();
     if (value.includes("user") || value.includes("human")) return "user";
-    if (value.includes("assistant") || value.includes("model") || value.includes("bot") || value.includes("ai")) return "assistant";
+    if (value.includes("assistant") || value.includes("model") || value.includes("bot") || value.includes("ai") || value.includes("grok")) return "assistant";
     if (value.includes("system")) return "system";
     return "unknown";
   }

@@ -9,7 +9,8 @@ export const PROVIDERS: ProviderInfo[] = [
   { id: "chatgpt", name: "ChatGPT" },
   { id: "gemini", name: "Gemini" },
   { id: "claude", name: "Claude" },
-  { id: "deepseek", name: "DeepSeek" }
+  { id: "deepseek", name: "DeepSeek" },
+  { id: "grok", name: "Grok" }
 ];
 
 export const DEFAULT_SETTINGS = {
@@ -17,7 +18,8 @@ export const DEFAULT_SETTINGS = {
     chatgpt: true,
     gemini: true,
     claude: true,
-    deepseek: true
+    deepseek: true,
+    grok: true
   } satisfies Record<ProviderId, boolean>
 };
 

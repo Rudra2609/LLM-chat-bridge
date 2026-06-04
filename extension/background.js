@@ -18,6 +18,11 @@ const PROVIDERS = {
     id: "deepseek",
     name: "DeepSeek",
     url: "https://chat.deepseek.com/"
+  },
+  grok: {
+    id: "grok",
+    name: "Grok",
+    url: "https://grok.com/"
   }
 };
 

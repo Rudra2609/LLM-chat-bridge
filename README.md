@@ -19,6 +19,7 @@ LLM Chat Bridge is a React + TypeScript Manifest V3 Chrome extension that transf
 - Gemini
 - Claude
 - DeepSeek
+- Grok
 
 ## Load Unpacked
 
